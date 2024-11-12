@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PalindromeRestController {
 
+    /**
+     * Endpoint para validar si una palabra es palindroma usando StringBuilder.
+     * @param word Es la palabra a validar.
+     * @return Un mensaje que indica si la palabra es palindroma o no.
+     */
     @GetMapping({"/is-palindrome/{word}", "/palindrome/{word}", "/palindromo/{word}"})
     public String isPalindrome(@PathVariable("word") String word){
         StringBuilder sb = new StringBuilder();
