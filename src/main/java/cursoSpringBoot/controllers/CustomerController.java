@@ -64,7 +64,7 @@ public class CustomerController {
     }
 
     @PatchMapping("/customer")
-    public Customer patchCustomer(int id, Customer customer){
+    public Customer patchCustomer(@RequestBody Customer customer){
         for(Customer c: customersList){
             if(c.getID() == customer.getID()){
                 if (customer.getUsername() != null){
