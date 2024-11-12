@@ -78,6 +78,7 @@ public class CustomerController {
                 if (customer.getPassword() != null){
                     c.setPassword(customer.getPassword());
                 }
+                return c;
             }
         }
         return null;
