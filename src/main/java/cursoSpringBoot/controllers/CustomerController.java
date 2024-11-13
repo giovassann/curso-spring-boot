@@ -1,6 +1,8 @@
 package cursoSpringBoot.controllers;
 
 import cursoSpringBoot.domain.Customer;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,53 +21,53 @@ public class CustomerController {
     ));
 
     @GetMapping
-    public List<Customer> getCustomers(){
-        return this.customersList;
+    public ResponseEntity<List<Customer>> getCustomers(){
+        return ResponseEntity.ok(this.customersList);
     }
 
     @GetMapping("/{username}")
-    public Customer getCustomer(@PathVariable("username") String username){
+    public ResponseEntity<?> getCustomer(@PathVariable("username") String username){
         for(Customer customer: customersList){
             if(customer.getUsername().equals(username)){
-                return customer;
+                return ResponseEntity.ok(customer);
             }
         }
-        return null;
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Customer with username '%s' not found.",username));
     }
 
     @PostMapping
-    public Customer addCustomer(@RequestBody Customer customer){
+    public ResponseEntity<?> addCustomer(@RequestBody Customer customer){
         this.customersList.add(customer);
-        return customer;
+        return ResponseEntity.status(HttpStatus.CREATED).body(String.format("Customer with username '%s' was created successfully.", customer.getUsername()));
     }
 
     @PutMapping
-    public Customer modifyCustomer(@RequestBody Customer customer){
+    public ResponseEntity<?> modifyCustomer(@RequestBody Customer customer){
         for(Customer c: customersList){
             if(c.getID() == (customer.getID())){
                 c.setName(customer.getName());
                 c.setUsername(customer.getUsername());
                 c.setPassword(customer.getPassword());
 
-                return c;
+                return ResponseEntity.ok().body(String.format("Customer with username '%s' was modified successfully.", customer.getUsername()));
             }
         }
-        return null;
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Customer with id %1d not found.",customer.getID()));
     }
 
     @DeleteMapping("/{id}")
-    public String deleteCustomer(@PathVariable("id") int id){
+    public ResponseEntity<?> deleteCustomer(@PathVariable("id") int id){
         for(Customer c: customersList){
             if(c.getID() == id){
                 customersList.remove(c);
-                return "Customer succesfully deleted";
+                return ResponseEntity.ok().body(String.format("Customer with id %1d successfully deleted.", id));
             }
         }
-        return null;
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Customer with id %1d not found.",id));
     }
 
     @PatchMapping
-    public Customer patchCustomer(@RequestBody Customer customer){
+    public ResponseEntity<?> patchCustomer(@RequestBody Customer customer){
         for(Customer c: customersList){
             if(c.getID() == customer.getID()){
                 if (customer.getUsername() != null){
@@ -79,9 +81,9 @@ public class CustomerController {
                 if (customer.getPassword() != null){
                     c.setPassword(customer.getPassword());
                 }
-                return c;
+                return ResponseEntity.ok().body(String.format("Customer with id '%1d' was modified successfully.", customer.getID()));
             }
         }
-        return null;
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Customer with id %1d not found.",customer.getID()));
     }
 }
